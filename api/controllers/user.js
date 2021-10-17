@@ -25,7 +25,8 @@ exports.signUp = (req, res, next) => {
                             name: req.body.name,
                             zoneId: req.body.zoneId,
                             contactNo: req.body.contactNo,
-                            address: req.body.address
+                            address: req.body.address,
+                            role: req.body.role
                         });
                         user
                             .save()
@@ -123,11 +124,38 @@ exports.deleteUser = (req, res, next) => {
 //     });
 // }
 
+exports.getAllUsers = (req, res, next) => {
+	User
+		.find({ role: { $ne: "admin" } })
+		.exec()
+		.then(users => {
+			const response = {
+				count: users.length,
+				users: users.map(user => {
+					return {
+						_id: user._id,
+            uId: user.uId,
+						email: user.email,
+						name: user.name,
+            contactNo: user.contactNo,
+            address: user.address,
+            role: user.role,
+            zoneId: user.zoneId
+					}
+				})
+			};
+			res.status(200).json(response);
+		})
+		.catch(error => {
+			next(error);
+		})
+};
+
 exports.getOneUser = (req, res, next) => {
     const userId = req.params.userId;
     User
         .findById(userId)
-        .select('_id email name contactNo address zoneId')
+        .select('_id uId email name contactNo role address zoneId')
         .exec()
         .then(result => {
             if(!result){

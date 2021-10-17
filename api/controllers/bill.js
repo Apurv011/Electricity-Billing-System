@@ -4,7 +4,7 @@ const Bill = require('../models/bill');
 exports.getAllBills = (req, res, next) => {
     Bill
         .find()
-        .select('_id userId issueDate paymentDate dueDate zone billAmount status')
+        .select('_id userId issueDate paymentDate dueDate zoneId unitsConsumed billAmount status')
         .exec()
         .then(bills => {
             res.status(200).json({
@@ -23,15 +23,15 @@ exports.createOneBill = (req, res, next) => {
     return new Bill({
         _id: mongoose.Types.ObjectId(),
         userId: req.body.userId,
-        zone: req.body.zone,
+        zoneId: req.body.zoneId,
+        unitsConsumed: req.body.unitsConsumed,
         billAmount: req.body.billAmount,
-        status: req.body.status,
-        dueDate: req.body.dueDate
+        status: req.body.status
     })
     .save()
     .then(result => {
         res.status(200).json({
-            order: result
+            bill: result
         });
     })
     .catch(err => {
@@ -72,7 +72,7 @@ exports.getBillByStatus = (req, res, next) => {
     const status = req.params.status;
     Bill
         .find({status: status})
-        .select('_id userId issueDate paymentDate dueDate zone billAmount status')
+        .select('_id userId issueDate paymentDate dueDate zoneId unitsConsumed billAmount status')
         .exec()
         .then(bill => {
             return res.status(201).json(bill);
@@ -86,7 +86,7 @@ exports.getBillByUserId = (req, res, next) => {
     const userId = req.params.userId;
     Bill
         .find({userId: userId})
-        .select('_id userId issueDate paymentDate dueDate zone billAmount status')
+        .select('_id userId issueDate paymentDate dueDate zoneId unitsConsumed billAmount status')
         .exec()
         .then(bills => {
             return res.status(201).json({

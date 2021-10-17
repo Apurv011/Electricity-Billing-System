@@ -12,6 +12,7 @@ exports.getAllZones = (req, res, next) => {
 					return {
 						_id: zone._id,
 						zoneName: zone.zoneName,
+						zoneId: zone.zoneId,
 						cost: zone.cost
 					}
 				})
@@ -34,6 +35,7 @@ exports.createOneZone = (req, res, next) => {
 				zone: {
 					_id: zone._id,
 					zoneName: zone.zoneName,
+					zoneId: zone.zoneId,
 					cost: zone.cost
 				}
 			});
@@ -82,6 +84,7 @@ function createZone(req) {
 	return new Zone({
 		_id: new mongoose.Types.ObjectId(),
 		zoneName: req.body.zoneName,
+		zoneId: req.body.zoneId,
 		cost: req.body.cost
 	});
 }
