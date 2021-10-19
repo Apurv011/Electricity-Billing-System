@@ -16,6 +16,10 @@ router.get('/:userId',  UserController.getOneUser);
 
 router.patch('/:userId', UserController.editUser);
 
+router.patch('/pass/:userId', UserController.editUserPass);
+
 router.delete('/:userId', UserController.deleteUser);
+
+router.post('/sendMail', UserController.sendMail);
 
 module.exports = router;

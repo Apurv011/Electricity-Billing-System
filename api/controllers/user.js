@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
+var nodemailer = require('nodemailer');
 
 const User = require('../models/user');
 
@@ -190,3 +191,62 @@ exports.editUser = (req, res, next) => {
               next(err);
           });
 }
+
+exports.editUserPass = (req, res, next) => {
+    const userId = req.params.userId;
+
+    var salt = bcrypt.genSaltSync(10)
+    return bcrypt.hash(req.body.password, salt, null, (err, hash) => {
+        if (err) {
+            console.log(err)
+            return res.status(500).json({
+                error: err
+            });
+        } else {
+          User
+              .update({ _id: userId }, { $set: {password: hash} })
+              .exec()
+              .then(updatedUser => {
+                  res.status(200).json({
+              message: 'Updated User Successfully!',
+              user: updatedUser
+            });
+              })
+              .catch(err => {
+                  next(err);
+              });
+        }
+    });
+}
+
+exports.sendMail = (req, res, next) => {
+  var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.MAIL,
+        pass: process.env.PASSWORD
+    }
+  });
+
+  var mailOptions = {
+    from: process.env.MAIL,
+    to: req.body.to,
+    subject: req.body.subject,
+    text: req.body.text
+    // html: '<h1>Hi Smartherd</h1><p>Your Messsage</p>'
+  };
+
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    }
+    else {
+      console.log('Email sent: ' + info.response);
+      return res.status(200).json({
+          result: "Email Send Successfully",
+      });
+    }
+  });
+};

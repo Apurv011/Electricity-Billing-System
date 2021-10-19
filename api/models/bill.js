@@ -8,11 +8,12 @@ const billSchema = mongoose.Schema({
     userId: {type: String, required: true},
     issueDate: {type: String, default: date},
     dueDate: { type: String, default: dueDate },
-    zoneId: { type: Number, required: true },
+    zoneName: { type: String, required: true },
     unitsConsumed: { type: Number, required: true },
     billAmount: { type: Number, required: true },
-    status: { type: String },
-    paymentDate: { type: String }
+    status: { type: String, default: "Not Paid" },
+    paymentDate: { type: String },
+    month: { type: String }
 });
 
 

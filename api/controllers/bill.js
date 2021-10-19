@@ -4,7 +4,7 @@ const Bill = require('../models/bill');
 exports.getAllBills = (req, res, next) => {
     Bill
         .find()
-        .select('_id userId issueDate paymentDate dueDate zoneId unitsConsumed billAmount status')
+        .select('_id userId month issueDate paymentDate dueDate zoneName unitsConsumed billAmount status')
         .exec()
         .then(bills => {
             res.status(200).json({
@@ -23,10 +23,11 @@ exports.createOneBill = (req, res, next) => {
     return new Bill({
         _id: mongoose.Types.ObjectId(),
         userId: req.body.userId,
-        zoneId: req.body.zoneId,
+        zoneName: req.body.zoneName,
         unitsConsumed: req.body.unitsConsumed,
         billAmount: req.body.billAmount,
-        status: req.body.status
+        status: req.body.status,
+        month: req.body.month
     })
     .save()
     .then(result => {
@@ -72,7 +73,7 @@ exports.getBillByStatus = (req, res, next) => {
     const status = req.params.status;
     Bill
         .find({status: status})
-        .select('_id userId issueDate paymentDate dueDate zoneId unitsConsumed billAmount status')
+        .select('_id userId month issueDate paymentDate dueDate zoneName unitsConsumed billAmount status')
         .exec()
         .then(bill => {
             return res.status(201).json(bill);
@@ -86,7 +87,24 @@ exports.getBillByUserId = (req, res, next) => {
     const userId = req.params.userId;
     Bill
         .find({userId: userId})
-        .select('_id userId issueDate paymentDate dueDate zoneId unitsConsumed billAmount status')
+        .select('_id userId month issueDate paymentDate dueDate zoneName unitsConsumed billAmount status')
+        .exec()
+        .then(bills => {
+            return res.status(201).json({
+              count: bills.length,
+              bills: bills
+            });
+        })
+        .catch(error => {
+            next(error);
+        });
+};
+
+exports.getBillPaidByUserId = (req, res, next) => {
+    const userId = req.params.userId;
+    Bill
+        .find({$and: [ {userId: userId}, {status: "Paid"} ]})
+        .select('_id userId month issueDate paymentDate dueDate zoneName unitsConsumed billAmount status')
         .exec()
         .then(bills => {
             return res.status(201).json({

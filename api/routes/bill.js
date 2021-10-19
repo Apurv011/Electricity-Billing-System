@@ -12,6 +12,8 @@ router.get('/status/:status', BillController.getBillByStatus);
 
 router.get('/user/:userId', BillController.getBillByUserId);
 
+router.get('/paid/user/:userId', BillController.getBillPaidByUserId);
+
 router.patch('/:billId', BillController.updateOneBill);
 
 module.exports = router;

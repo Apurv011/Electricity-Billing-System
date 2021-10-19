@@ -7,6 +7,10 @@ const ZoneController = require('../controllers/zone');
 
 router.get('/', ZoneController.getAllZones);
 
+router.get('/:zoonId', ZoneController.getOneZone);
+
+router.get('/name/:zoneName', ZoneController.getZoneByName);
+
 router.post('/', ZoneController.createOneZone);
 
 router.patch('/:zoneId', ZoneController.updateOneZone);

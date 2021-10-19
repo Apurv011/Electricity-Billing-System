@@ -63,6 +63,45 @@ exports.updateOneZone = (req, res, next) => {
 		})
 };
 
+exports.getOneZone = (req, res, next) => {
+    const zoneId = req.params.zoneId;
+    Zone
+        .findById(zoneId)
+        .select('_id zoneName zoneId cost')
+        .exec()
+        .then(result => {
+            if(!result){
+                return res.status(404).json({
+                    error: 'User not found',
+                });
+            }
+            return res.status(200).json({
+                user: result,
+            });
+        })
+        .catch(err => {
+            return res.status(500).json({
+                error: err,
+            });
+        });
+}
+
+exports.getZoneByName = (req, res, next) => {
+    const zoneName = req.params.zoneName;
+    Zone
+        .find({zoneName: zoneName})
+        .select('_id zoneName zoneId cost')
+        .exec()
+        .then(zone => {
+            return res.status(201).json({
+              zone: zone
+            });
+        })
+        .catch(error => {
+            next(error);
+        });
+};
+
 exports.deleteOneZOne = (req, res, next) => {
 	const zoneId = req.params.zoneId;
 
