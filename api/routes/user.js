@@ -22,4 +22,6 @@ router.delete('/:userId', UserController.deleteUser);
 
 router.post('/sendMail', UserController.sendMail);
 
+router.post('/payment', UserController.payment);
+
 module.exports = router;
