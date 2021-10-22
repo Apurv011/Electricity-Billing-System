@@ -92,7 +92,7 @@ function CreateZone() {
                       className="flex-grow-1 bg-login-image"
                       style={{
                         backgroundImage:
-                          "url(https://i.pinimg.com/originals/64/32/e9/6432e9b8f1d879a152faff24bc7b73b8.jpg)",
+                          "url(https://5.imimg.com/data5/IQ/TF/FL/SELLER-30356897/pay-electricity-bill-services-500x500.jpg)",
                         backgroundPosition: "center",
                         backgroundSize: "cover",
                         backgroundRepeat: "no-repeat",
