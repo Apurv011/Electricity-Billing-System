@@ -101,10 +101,9 @@ function UpdateZone() {
     <div>
       <Navbar page="Update Zone" />
       <div className="container" style={{ paddingTop: "40px" }}>
-        <table
-          style={{ width: "100%" }}
-          className="table table-hover table-striped table-warning"
-        >
+
+      <div className="table-responsive">
+      <table className="table table-hover bg-warning">
           <thead>
             <tr>
               <th style={{ width: "25%" }} scope="col">
@@ -121,11 +120,8 @@ function UpdateZone() {
               </th>
             </tr>
           </thead>
-        </table>
         {allZones.map((zone, index) => {
           return (
-            <div style={{ overflowX: "auto" }}>
-              <table className="table table-hover table-striped table-warning">
                 <tbody>
                   <tr className="table-info">
                     <td style={{ width: "25%" }}>
@@ -156,10 +152,10 @@ function UpdateZone() {
                     </td>
                   </tr>
                 </tbody>
-              </table>
-            </div>
           );
         })}
+        </table>
+        </div>
       </div>
       <div className="modal fade" id="exampleModalCenter">
         <div className="modal-dialog">

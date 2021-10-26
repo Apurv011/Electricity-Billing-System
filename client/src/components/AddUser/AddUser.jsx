@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import uniqueString from 'unique-string';
 
 function AddUser(props) {
   let history = useHistory();
@@ -16,6 +17,8 @@ function AddUser(props) {
     contactNo: "",
     address: ""
   });
+
+  const [passGen, setPassGen] = useState(false);
 
   const [mail, setMail] = useState({
     to: "",
@@ -77,17 +80,26 @@ function AddUser(props) {
         };
       });
     }
-    if (name === "password") {
-      var text = `Your Account is registered Successfully 
-Your password is ${value}
+  }
+
+  function getPassword(){
+    const pass = uniqueString().substring(0,12);
+    setUser((preValues) => {
+      return {
+        ...preValues,
+        password: pass
+      };
+    });
+    var text = `Your Account is registered Successfully
+Your password is ${pass}
 Login to your account and change your password.`;
-      setMail((preValues) => {
-        return {
-          ...preValues,
-          text: text
-        };
-      });
-    }
+    setMail((preValues) => {
+      return {
+        ...preValues,
+        text: text
+      };
+    });
+    setPassGen(true);
   }
 
   return (
@@ -176,15 +188,9 @@ Login to your account and change your password.`;
                       />
                     </div>
                     <div className="mb-3">
-                      <input
-                        onChange={handleChange}
-                        className="form-control form-control-user"
-                        type="password"
-                        id="examplePasswordInput"
-                        placeholder="Password"
-                        name="password"
-                        value={user.password}
-                      />
+                    <span>Password</span>
+                       {passGen ? <span className="ml-2"> Password Generated! </span> :
+                      <button className="ml-2 btn btn-outline-dark" onClick={getPassword}>Generate Password</button>}
                     </div>
                     <button
                       onClick={registerUser}

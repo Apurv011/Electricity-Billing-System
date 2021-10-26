@@ -129,47 +129,43 @@ function ViewUserBill() {
   return (
     <div>
       <UserNavbar page="View Bill" />
-      <div className="container" style={{ paddingTop: "40px" }}>
+      <div style={{ margin: "40px" }}>
         {allBills.filter((b) => b.status !== "Paid").length < 1 ? (
           <h1 style={{ textAlign: "center" }}>No Bills</h1>
         ) : (
-          <table
-            style={{ width: "100%" }}
-            className="table table-hover table-striped table-warning"
-          >
+          <div className="table-responsive">
+          <table className="table table-hover bg-warning">
             <thead>
               <tr>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   ID
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Zone
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Month
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Issue Date
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Due Date
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Units Consumed
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Bill Amount
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Status
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Action
                 </th>
               </tr>
             </thead>
-          </table>
-        )}
         {allBills.filter((b) => b.status !== "Paid").length < 1 ? (
           <h1></h1>
         ) : (
@@ -177,38 +173,33 @@ function ViewUserBill() {
             .filter((b) => b.status !== "Paid")
             .map((bill, index) => {
               return (
-                <div style={{ overflowX: "auto" }}>
-                  <table
-                    style={{ width: "100%" }}
-                    className="table table-hover table-striped table-warning"
-                  >
                     <tbody>
                       <tr className="table-info">
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill._id.substring(0, 8)}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.zoneName}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.month}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.issueDate}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.dueDate}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.unitsConsumed}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.billAmount}</b>
                         </td>
-                        <td style={{ width: "9%" }}>
+                        <td>
                           <b>{bill.status}</b>
                         </td>
-                        <td style={{ width: "10%" }}>
+                        <td>
                           <button
                             style={{
                               marginLeft: "5px",
@@ -227,11 +218,12 @@ function ViewUserBill() {
                         </td>
                       </tr>
                     </tbody>
-                  </table>
-                </div>
               );
             })
         )}
+      </table>
+    </div>
+  )}
       </div>
       <div className="modal fade" id="exampleModalCenter1">
         <div className="modal-dialog">

@@ -47,8 +47,8 @@ function AdminHome() {
       <h1 style={{ padding: "20px", textAlign: "center" }}> Welcome, Admin </h1>
       <div className="d-flex justify-content-center ">
         <div style={{ width: "450px" }} className="card bg-light ">
-          <div className="card-header">
-            <h3 className="d-flex justify-content-center">Admin Details</h3>
+          <div className="card-header bg-dark">
+            <h3 style={{color:"#ffffff"}} className="d-flex justify-content-center">Admin Details</h3>
           </div>
           <div className="card-body">
             <h5 className="card-title">

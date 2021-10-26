@@ -44,85 +44,77 @@ function PaymentHistory() {
         {allBills.length < 1 ? (
           <h3>No Bills</h3>
         ) : (
-          <table
-            style={{ width: "100%" }}
-            className="table table-hover table-striped table-warning"
-          >
+          <div className="table-responsive">
+          <table className="table table-hover bg-warning">
             <thead>
               <tr>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   ID
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Zone
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Month
                 </th>
                 <th style={{ width: "9%" }} scope="col">
                   Issue Date
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Due Date
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Payment Date
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Units Consumed
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Bill Amount
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Status
                 </th>
               </tr>
             </thead>
-          </table>
-        )}
         {allBills.map((bill, index) => {
           return (
-            <div style={{ overflowX: "auto" }}>
-              <table
-                style={{ width: "100%" }}
-                className="table table-hover table-striped table-warning"
-              >
                 <tbody>
                   <tr className="table-info">
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill._id.substring(0, 8)}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.zoneName}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.month}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.issueDate}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.dueDate}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.paymentDate}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.unitsConsumed}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.billAmount}</b>
                     </td>
-                    <td style={{ width: "9%" }}>
+                    <td>
                       <b>{bill.status}</b>
                     </td>
                   </tr>
                 </tbody>
-              </table>
-            </div>
           );
         })}
+        </table>
+      </div>
+    )}
       </div>
     </div>
   );

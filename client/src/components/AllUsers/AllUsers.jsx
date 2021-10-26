@@ -145,62 +145,57 @@ function AllUsers() {
   return (
     <div>
       <Navbar page="View User" />
-      <div className="container" style={{ paddingTop: "40px" }}>
-        <table
-          style={{ width: "100%" }}
-          className="table table-hover table-striped table-warning"
-        >
+      <div style={{margin:"20px"}}>
+      <div className="table-responsive">
+      <table className="table table-hover bg-warning">
           <thead>
             <tr>
-              <th style={{ width: "8%" }} scope="col">
+              <th scope="col">
                 ID
               </th>
-              <th style={{ width: "14%" }} scope="col">
+              <th scope="col">
                 Name
               </th>
-              <th style={{ width: "10%" }} scope="col">
+              <th scope="col">
                 Email
               </th>
-              <th style={{ width: "14%" }} scope="col">
+              <th scope="col">
                 Contact Number
               </th>
-              <th style={{ width: "15%" }} scope="col">
+              <th scope="col">
                 Address
               </th>
-              <th style={{ width: "5%" }} scope="col">
+              <th scope="col">
                 Zone ID
               </th>
-              <th style={{ width: "10%" }} scope="col">
+              <th scope="col">
                 Action
               </th>
             </tr>
           </thead>
-        </table>
         {allUsers.map((user, index) => {
           return (
-            <div style={{ overflowX: "auto" }}>
-              <table className="table table-hover table-striped table-warning">
                 <tbody>
                   <tr className="table-info">
-                    <td style={{ width: "8%" }}>
+                    <td>
                       <b>{user.uId}</b>
                     </td>
-                    <td style={{ width: "10%" }}>
+                    <td>
                       <b>{user.name}</b>
                     </td>
-                    <td style={{ width: "10%" }}>
+                    <td>
                       <b>{user.email}</b>
                     </td>
-                    <td style={{ width: "10%" }}>
+                    <td>
                       <b>{user.contactNo}</b>
                     </td>
-                    <td style={{ width: "15%" }}>
+                    <td>
                       <b>{user.address}</b>
                     </td>
-                    <td style={{ width: "2%" }}>
+                    <td>
                       <b>{user.zoneId}</b>
                     </td>
-                    <td style={{ width: "10%" }}>
+                    <td>
                       <button
                         style={{
                           marginLeft: "5px",
@@ -232,10 +227,11 @@ function AllUsers() {
                     </td>
                   </tr>
                 </tbody>
-              </table>
-            </div>
           );
         })}
+
+      </table>
+      </div>
       </div>
       <div className="modal fade" id="exampleModalCenter">
         <div className="modal-dialog">
