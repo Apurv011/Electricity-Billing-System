@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 var nodemailer = require('nodemailer');
-const stripe = require("stripe")(process.env.STRIPE_KEY);
+//const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 const User = require('../models/user');
 
@@ -177,6 +177,29 @@ exports.getOneUser = (req, res, next) => {
         });
 }
 
+exports.getOneUserById = (req, res, next) => {
+    const uId = req.params.uId;
+    User
+        .find({uId: uId})
+        .select('_id uId email name contactNo role address zoneId')
+        .exec()
+        .then(result => {
+            if(!result){
+                return res.status(404).json({
+                    error: 'User not found',
+                });
+            }
+            return res.status(200).json({
+                user: result,
+            });
+        })
+        .catch(err => {
+            return res.status(500).json({
+                error: err,
+            });
+        });
+}
+
 exports.editUser = (req, res, next) => {
     const userId = req.params.userId;
 
@@ -222,43 +245,43 @@ exports.editUserPass = (req, res, next) => {
 }
 
 
-exports.payment = async (req, res, next) => {
-  let error;
-  let status;
-
-  try {
-    const customer = await stripe.customers.create({
-      email: req.body.token.email,
-      source: req.body.token.id
-    });
-
-      const charge = await stripe.charges.create(
-        {
-          amount: req.body.billAmt*100,
-          currency: "inr",
-          customer: customer.id,
-          receipt_email: req.body.token.email,
-          description: "Payment Successful!",
-          shipping: {
-            name: req.body.token.card.name,
-            address: {
-              line1: req.body.token.card.address_line1,
-              line2: req.body.token.card.address_line2,
-              city: req.body.token.card.address_city,
-              country: req.body.token.card.address_country,
-              postal_code: req.body.token.card.address_zip
-            }
-          }
-        }
-      );
-      status = "success";
-  } catch (error) {
-    console.error("Error:", error);
-    status = "failure";
-  }
-
-  res.json({ error, status });
-}
+// exports.payment = async (req, res, next) => {
+//   let error;
+//   let status;
+//
+//   try {
+//     const customer = await stripe.customers.create({
+//       email: req.body.token.email,
+//       source: req.body.token.id
+//     });
+//
+//       const charge = await stripe.charges.create(
+//         {
+//           amount: req.body.billAmt*100,
+//           currency: "inr",
+//           customer: customer.id,
+//           receipt_email: req.body.token.email,
+//           description: "Payment Successful!",
+//           shipping: {
+//             name: req.body.token.card.name,
+//             address: {
+//               line1: req.body.token.card.address_line1,
+//               line2: req.body.token.card.address_line2,
+//               city: req.body.token.card.address_city,
+//               country: req.body.token.card.address_country,
+//               postal_code: req.body.token.card.address_zip
+//             }
+//           }
+//         }
+//       );
+//       status = "success";
+//   } catch (error) {
+//     console.error("Error:", error);
+//     status = "failure";
+//   }
+//
+//   res.json({ error, status });
+//}
 
 
 exports.sendMail = (req, res, next) => {

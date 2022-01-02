@@ -57,7 +57,7 @@ function PaymentHistory() {
                 <th scope="col">
                   Month
                 </th>
-                <th style={{ width: "9%" }} scope="col">
+                <th scope="col">
                   Issue Date
                 </th>
                 <th scope="col">

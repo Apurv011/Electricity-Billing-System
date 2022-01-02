@@ -45,43 +45,151 @@ function ViewUserBill() {
     }
   }, []);
 
-  async function handleToken(token) {
-    var response = await axios.post("http://localhost:5000/user/payment", {
-      token,
-      billAmt
+  // async function handleToken(token) {
+  //   var response = await axios.post("http://localhost:5000/user/payment", {
+  //     token,
+  //     billAmt
+  //   });
+  //
+  //   if (response.data.status === "success") {
+  //     const loggedInUser = localStorage.getItem("userData");
+  //
+  //     if (loggedInUser) {
+  //       const foundUser = JSON.parse(loggedInUser);
+  //
+  //       const config = {
+  //         headers: { Authorization: "Bearer " + foundUser.token }
+  //       };
+  //       if (foundUser.user.role === "user") {
+  //         var future = new Date();
+  //
+  //         let date = ("0" + future.getDate()).slice(-2);
+  //         let month = ("0" + (future.getMonth() + 1)).slice(-2);
+  //         let year = future.getFullYear();
+  //
+  //         date = date + "-" + month + "-" + year;
+  //
+  //         const status = {
+  //           status: "Paid",
+  //           paymentDate: date
+  //         };
+  //         axios
+  //           .patch(`http://localhost:5000/bill/${billId}`, status, config)
+  //           .then((response) => {
+  //             console.log(response.data);
+  //             axios
+  //               .get(
+  //                 `http://localhost:5000/bill/user/${foundUser.user.uId}`,
+  //                 config
+  //               )
+  //               .then((res) => {
+  //                 if (res.data.bills.length > 0) {
+  //                   setAllBills(res.data.bills);
+  //                 } else {
+  //                   console.log("A");
+  //                 }
+  //               })
+  //               .catch((error) => {
+  //                 history.push("/login");
+  //               });
+  //           });
+  //         setBillAmt(0);
+  //         setBillId("");
+  //       } else {
+  //         history.push("/login");
+  //       }
+  //       toast.success("Payment Successful!", {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined
+  //       });
+  //     } else {
+  //       toast.error("Payment Failed", {
+  //         position: "top-center",
+  //         autoClose: 3000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined
+  //       });
+  //     }
+  //   }
+  // }
+
+  async function displayRazorpay(amt, billId, billMonth) {
+
+    var body = {amt: amt};
+    axios.post("http://localhost:5000/payment/razorpay", body).then(response => {
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+        currency: response.data.currency,
+        amount: response.data.amount,
+        name: "Electricity Billing System",
+        description: "Pay your bills",
+        order_id: response.data.id,
+        handler: function (res) {
+          console.log(res);
+          payBill(amt, billId, billMonth);
+          toast.success("Payment Successful!", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined
+          });
+          history.push('/userHome');
+        },
+      };
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
     });
 
-    if (response.data.status === "success") {
-      const loggedInUser = localStorage.getItem("userData");
+  }
 
-      if (loggedInUser) {
-        const foundUser = JSON.parse(loggedInUser);
+  function payBill(billAmt, billId, billMonth){
 
-        const config = {
-          headers: { Authorization: "Bearer " + foundUser.token }
+    const loggedInUser = localStorage.getItem("userData");
+
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+
+      const config = {
+        headers: { Authorization: "Bearer " + foundUser.token }
+      };
+
+      if (foundUser.user.role === "user") {
+
+        var future = new Date();
+        let date = ("0" + future.getDate()).slice(-2);
+        let month = ("0" + (future.getMonth() + 1)).slice(-2);
+        let year = future.getFullYear();
+
+        date = date + "-" + month + "-" + year;
+
+        const status = {
+          status: "Paid",
+          paymentDate: date
         };
-        if (foundUser.user.role === "user") {
-          var future = new Date();
 
-          let date = ("0" + future.getDate()).slice(-2);
-          let month = ("0" + (future.getMonth() + 1)).slice(-2);
-          let year = future.getFullYear();
+        const mail = {
+          to: foundUser.user.email,
+          subject: `Bill Payment Successful!`,
+          text: `You have Successfully paid your electricity bill!
+Bill Month: ${billMonth}
+Bill Amount: ${billAmt}`
+        }
 
-          date = date + "-" + month + "-" + year;
-
-          const status = {
-            status: "Paid",
-            paymentDate: date
-          };
-          axios
-            .patch(`http://localhost:5000/bill/${billId}`, status, config)
+        axios.patch(`http://localhost:5000/bill/${billId}`, status, config)
             .then((response) => {
               console.log(response.data);
-              axios
-                .get(
-                  `http://localhost:5000/bill/user/${foundUser.user.uId}`,
-                  config
-                )
+              axios.get(`http://localhost:5000/bill/user/${foundUser.user.uId}`, config)
                 .then((res) => {
                   if (res.data.bills.length > 0) {
                     setAllBills(res.data.bills);
@@ -92,39 +200,21 @@ function ViewUserBill() {
                 .catch((error) => {
                   history.push("/login");
                 });
+              axios.post("http://localhost:5000/user/sendMail", mail).then((resp) => {
+                console.log(resp.data);
+              });
             });
+
           setBillAmt(0);
           setBillId("");
-        } else {
-          history.push("/login");
-        }
-        toast.success("Payment Successful!", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
-      } else {
-        toast.error("Payment Failed", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined
-        });
       }
     }
   }
 
-  function getCurrentBill(amt, id) {
-    setBillAmt(amt);
-    setBillId(id);
-  }
+  // function getCurrentBill(amt, id) {
+  //   setBillAmt(amt);
+  //   setBillId(id);
+  // }
 
   return (
     <div>
@@ -207,10 +297,8 @@ function ViewUserBill() {
                               marginBottom: "5px"
                             }}
                             className="btn btn-sm btn-outline-success"
-                            data-toggle="modal"
-                            data-target="#exampleModalCenter1"
                             onClick={() =>
-                              getCurrentBill(bill.billAmount, bill._id)
+                              displayRazorpay(bill.billAmount, bill._id, bill.month)
                             }
                           >
                             Pay
@@ -224,45 +312,6 @@ function ViewUserBill() {
       </table>
     </div>
   )}
-      </div>
-      <div className="modal fade" id="exampleModalCenter1">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div style={{ textAlign: "center" }} className="modal-header">
-              <h5 className="modal-title">Pay Bill</h5>
-            </div>
-            <div className="modal-body">
-              <p>Bill Amount: {billAmt}</p>
-            </div>
-            <div className="modal-footer">
-              <StripeCheckout
-                stripeKey={process.env.REACT_APP_STRIPE_KEY}
-                token={handleToken}
-                billingAddress
-                shippingAddress
-                amount={billAmt*100}
-              >
-                <button
-                  style={{ marginRight: "5px" }}
-                  type="button"
-                  className="btn btn-outline-success"
-                  data-dismiss="modal"
-                >
-                  Pay
-                </button>
-              </StripeCheckout>
-
-              <button
-                style={{ marginLeft: "5px" }}
-                type="button"
-                className="btn btn-outline-dark"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
       <ToastContainer />
     </div>

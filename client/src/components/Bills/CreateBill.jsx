@@ -19,6 +19,13 @@ function CreateBill() {
     billAmount: "",
     month: ""
   });
+
+  const [mail, setMail] = useState({
+    to: "",
+    subject: "Pay your Bill",
+    text: ""
+  });
+
   const [b, setB] = useState(false);
 
   var today = new Date();
@@ -27,6 +34,21 @@ function CreateBill() {
   var yyyy = today.getFullYear();
 
   today = yyyy + "/" + mm + "/" + dd;
+
+  function getDueDate(){
+
+    var future = new Date();
+    future.setDate(future.getDate() + 30);
+
+    let date = ("0" + future.getDate()).slice(-2);
+    let month = ("0" + (future.getMonth() + 1)).slice(-2);
+    let year = future.getFullYear();
+    let hours = future.getHours();
+    let minutes = future.getMinutes();
+
+    date = date + "-" + month + "-" + year;
+    return date;
+  }
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("userData");
@@ -94,6 +116,31 @@ function CreateBill() {
 
   function handleChange(event) {
     const { name, value } = event.target;
+    if(name==="userId"){
+      const loggedInUser = localStorage.getItem("userData");
+      if (loggedInUser) {
+        const foundUser = JSON.parse(loggedInUser);
+        if (foundUser.user.role === "admin") {
+          const config = {
+            headers: { Authorization: "Bearer " + foundUser.token }
+          };
+          axios
+            .get(`http://localhost:5000/user/id/${value}`, config)
+            .then((res) => {
+              console.log(res.data)
+              setMail((preValues) => {
+                return {
+                  ...preValues,
+                  to: res.data.user[0].email
+                };
+              });
+            })
+            .catch((error) => {
+              history.push("/login");
+            });
+        }
+      }
+    }
     setBill((preValues) => {
       return {
         ...preValues,
@@ -116,6 +163,14 @@ function CreateBill() {
       };
     });
     setB(true);
+    setMail((preValues) => {
+      return {
+        ...preValues,
+        text: `Bill Month: ${month}
+        Bill Amount: ${amt}
+        Due Date: ${getDueDate()}`
+      };
+    });
   }
 
   function createBill(e) {
@@ -127,6 +182,9 @@ function CreateBill() {
         const config = {
           headers: { Authorization: "Bearer " + foundUser.token }
         };
+        axios.post("http://localhost:5000/user/sendMail", mail).then((response) => {
+          console.log(response.data);
+        });
         axios
           .post("http://localhost:5000/bill/", bill, config)
           .then((response) => {

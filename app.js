@@ -7,15 +7,13 @@ require("dotenv").config();
 const zoneRoutes = require('./api/routes/zone');
 const billRoutes = require('./api/routes/bill');
 const userRoutes = require('./api/routes/user');
+const paymentRoutes = require('./api/routes/payment');
 
 mongoose.connect('mongodb+srv://dbUser:zAo1jUAhY3OKimuB@cluster0.xpim3.mongodb.net/eleDBs?retryWrites=true&w=majority', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const app = express();
 // Log request data
 app.use(morgan('dev'));
-
-// Setup static files path
-app.use('/uploads', express.static('uploads'));
 
 // Use body parser middleware to parse body of incoming requests
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,6 +34,7 @@ app.use((req, res, next) => {
 app.use('/zone', zoneRoutes);
 app.use('/bill', billRoutes);
 app.use('/user', userRoutes);
+app.use('/payment', paymentRoutes);
 
 // Handle Error Requests
 app.use((req, res, next) => {

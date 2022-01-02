@@ -16,6 +16,12 @@ function AllUsers() {
     zoneId: ""
   });
   const [userId, setUserId] = useState("");
+  const [uId, setUId] = useState("");
+  const [searchU, setSearchU] = useState(false);
+
+  function handleChangeSearch(event) {
+    setUId(event.target.value);
+  }
 
   function getCurrentUser(id, email, contactNo, address, zoneId) {
     setUserInfo({
@@ -108,6 +114,40 @@ function AllUsers() {
     }
   }
 
+  function searchUser(){
+    setAllUsers((preValues) => {
+      return allUsers.filter((user, index) => {
+        return user.uId === uId;
+      });
+    });
+    setSearchU(true);
+  }
+
+  function getAll(){
+    const loggedInUser = localStorage.getItem("userData");
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      if (foundUser.user.role === "admin") {
+        const config = {
+          headers: { Authorization: "Bearer " + foundUser.token }
+        };
+        axios
+          .get("http://localhost:5000/user/", config)
+          .then((res) => {
+            setAllUsers(res.data.users);
+          })
+          .catch((error) => {
+            history.push("/login");
+          });
+      } else {
+        history.push("/login");
+      }
+    } else {
+      history.push("/login");
+    }
+    setSearchU(false);
+  }
+
   function deleteUser(id) {
     const loggedInUser = localStorage.getItem("userData");
 
@@ -145,6 +185,23 @@ function AllUsers() {
   return (
     <div>
       <Navbar page="View User" />
+
+        {!searchU ?
+          <div className="form-inline float-right" style={{margin: "20px"}}>
+            <input
+              onChange={handleChangeSearch}
+              className="form-control mr-sm-2"
+              placeholder="Search User ID"
+              name="uId"
+              value={uId}
+            />
+            <button className="btn btn-dark my-2 my-sm-0" onClick={searchUser}>Search User</button>
+          </div>
+          :
+          <div className="form-inline float-right" style={{margin: "20px"}}>
+            <button className="btn btn-dark my-2 my-sm-0" onClick={getAll}>List All Users</button>
+          </div>
+      }
       <div style={{margin:"20px"}}>
       <div className="table-responsive">
       <table className="table table-hover bg-warning">

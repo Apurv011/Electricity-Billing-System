@@ -12,16 +12,17 @@ router.post('/signup', UserController.signUp);
 
 router.post('/login', UserController.logIn);
 
+router.post('/sendMail', UserController.sendMail);
+
+router.patch('/pass/:userId', UserController.editUserPass);
+
+router.get('/id/:uId',  UserController.getOneUserById);
+
 router.get('/:userId',  UserController.getOneUser);
 
 router.patch('/:userId', UserController.editUser);
 
-router.patch('/pass/:userId', UserController.editUserPass);
-
 router.delete('/:userId', UserController.deleteUser);
 
-router.post('/sendMail', UserController.sendMail);
-
-router.post('/payment', UserController.payment);
 
 module.exports = router;
